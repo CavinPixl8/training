@@ -1,0 +1,14 @@
+{
+    "name":"Testsite",
+    "version":"1.0.0",
+    "author":"Cavin",
+    "slug":"testsite",
+    "createPackageDirectory" : false,
+    "private":true,
+    "installPaths":{
+        "presidecms":"preside"
+    },
+    "dependencies":{
+        "presidecms":"stable"
+    }
+}

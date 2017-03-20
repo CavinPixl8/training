@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form i18nBaseUri="widgets.quicklink:">
+	<tab>
+		<fieldset>
+			<field name="title" />
+			<field name="links" control="linkPicker" quickadd="true" quickedit="true" sortable="true" multiple="true"/>
+		</fieldset>
+	</tab>
+</form>

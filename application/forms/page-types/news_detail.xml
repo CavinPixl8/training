@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form i18nBaseUri="page-types.news_detail:">
+	<tab id="main">
+		<fieldset id="main">
+			<field binding="news_detail.date_published" />
+			<field binding="news_detail.news_author" />
+			<field binding="news_detail.category" />
+			<field binding="news_detail.regions" quickadd="true" quickedit="true" sortable="true" />
+		</fieldset>
+	</tab>
+</form>

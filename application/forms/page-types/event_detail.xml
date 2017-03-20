@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form i18nBaseUri="page-types.event_detail:">
+	<tab id="main">
+		<fieldset id="main">
+			<field binding="event_detail.organiser" control="textinput"/>
+			<field binding="event_detail.location"  control="textinput"/>
+			<field binding="event_detail.start_date" />
+			<field binding="event_detail.regions" quickadd="true" quickedit="true" sortable="true" />
+			<field binding="event_detail.category" />
+		</fieldset>
+	</tab>
+</form>

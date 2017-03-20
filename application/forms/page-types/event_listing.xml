@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form i18nBaseUri="page-types.event_listing:">
+	<tab id="main">
+		<fieldset id="main">
+			<field binding="event_listing.posts_per_page" />
+			<field binding="event_listing.featured_events" />
+		</fieldset>
+	</tab>
+	<tab id="dates" deleted="true" />
+</form>

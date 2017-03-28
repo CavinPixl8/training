@@ -16,5 +16,34 @@ component extends="preside.system.config.Config" {
 		settings.ckeditor.defaults.stylesheets.append( "css-layout" );
 
 		settings.features.websiteUsers.enabled = true;
+
+		_setupDerivatives( settings.assetManager.derivatives );
 	}
+
+	private void function _setupDerivatives( required struct derivatives ){
+
+		derivatives.listingImage = {
+			  permissions     = "inherit"
+			, transformations = [
+				{ method="resize", args={ width=300, height=120, maintainAspectRatio=true } }
+			]
+		};
+
+		derivatives.detailImage = {
+			  permissions     = "inherit"
+			, transformations = [
+				{ method="shrinkToFit", args={ width=300, height=120  } }
+			]
+		};
+		derivatives.newsPDFPreview = {
+			  permissions     = "inherit"
+			, transformations = [
+				  { method="pdfPreview" , args={ page=1 }, inputfiletype="pdf", outputfiletype="jpg" }
+				, { method="shrinkToFit", args={ width=200, height=200 } }
+			]
+		};
+
+
+	}
+
 }

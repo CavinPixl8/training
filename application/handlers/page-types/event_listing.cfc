@@ -6,10 +6,10 @@ component {
 		var region   = rc.region   ?: "";
 		var category = rc.category ?: "";
 
-		args.eventList = eventService.getAllEventDetails( 
+		args.eventList = eventService.getAllEventDetails(
 			  listingId = event.getCurrentPageId()
 			, region    = region
-			, category  = category 
+			, category  = category
 		);
 		args.eventRegions = eventService.getAllEventRegions();
 		args.categories   = eventService.getAllEventCategories();
@@ -24,9 +24,9 @@ component {
 
 		return renderView(
 			  view = "page-types/event_listing/_featuredEvents"
-			, args = { 
-				  featuredEvents = eventService.getFeaturedEvents( ) 				
+			, args = {
+				  featuredEvents = eventService.getFeaturedEvents( args.eventListingPage )
 			}
 		);
-	}	
+	}
 }

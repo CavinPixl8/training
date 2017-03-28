@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form i18nBaseUri="widgets.latest_events:">
+	<tab>
+		<fieldset>
+			<field name="max_items" />
+		</fieldset>
+	</tab>
+</form>

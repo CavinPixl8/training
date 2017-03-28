@@ -5,8 +5,12 @@
 			<field binding="event_detail.organiser" control="textinput"/>
 			<field binding="event_detail.location"  control="textinput"/>
 			<field binding="event_detail.start_date" />
-			<field binding="event_detail.regions" quickadd="true" quickedit="true" sortable="true" />
+			<field binding="event_detail.regions"   quickadd="true" quickedit="true" sortable="true" />
 			<field binding="event_detail.category" />
+			<field binding="event_detail.program" />
+			<field binding="event_detail.bookable" />
+			<field binding="event_detail.price" />
+			<field binding="event_detail.session"   quickadd="true" quickedit="true" sortable="true" />
 		</fieldset>
 	</tab>
 </form>

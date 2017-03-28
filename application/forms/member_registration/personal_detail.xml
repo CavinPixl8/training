@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form i18nBaseUri="forms.member_registration.personal_detail:">
+	<tab>
+		<fieldset id="personal_detail">
+
+			<field name="firstname" control="textInput"  required="true" minLength="6" />
+			<field name="lastname"  control="textInput"  required="true" minLength="6" />
+			<field name="email"     control="emailInput" required="true" />
+			<field name="dob"       control="datePicker" required="true" />
+			<field name="gender"    control="radio"      required="true" labels="Female,Male" values="F,M" />
+			<field name="address"   control="textArea"   required="true" />
+			<field name="interested_in"  control="objectCheckbox" object="category" required="false" />
+
+		</fieldset>
+	</tab>
+
+</form>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form i18nBaseUri="page-types.event_booking:">
+	<tab>
+		<fieldset id="event_booking">
+		</fieldset>
+	</tab>
+</form>

@@ -24,12 +24,12 @@ component {
 		return renderView(
 			  view = "page-types/event_detail/_relatedEvents"
 			, args = {
-				relatedEvents = eventService.getRelatedEventsByRegions ( regionIds )
+				relatedEvents = eventService.getRelatedEventsByRegions ( regionIds, eventId )
 			}
 		);
 	}
 
-	private string function getEventDetailRegions(){
+	private string function getEventDetailRegions() {
 		var recordId = args.recordId ?: "";
 
 		if( isEmpty( recordId ) ){
@@ -40,6 +40,20 @@ component {
 
 		return renderView(
 			  view = "page-types/event_detail/_eventRegions"
+			, args = args
+		);
+	}
+	private string function getPrograms(event, rc, prc, args={} ) {
+		var eventId = args.eventId ?: "";
+
+		if ( isEmpty( eventId ) ){
+			return "";
+		}
+
+		args.programs = eventService.getProgramsByEvent( eventId=eventId );
+
+		return renderView(
+			  view = "page-types/event_detail/_eventPrograms"
 			, args = args
 		);
 	}

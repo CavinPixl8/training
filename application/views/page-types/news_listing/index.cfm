@@ -8,7 +8,7 @@
 	newsRegions    = args.newsRegions  ?: queryNew('');
 	featuredNews   = args.featuredNews ?: queryNew('');
 	selectedRegion = rc.region ?: "";
-	
+
 </cfscript>
 
 <cfset newsFilter ={  "page.parent_page" = event.getCurrentPageID() }  >
@@ -21,16 +21,16 @@
 	<h1>#args.title#</h1>
 	#args.main_content#
 	#renderViewlet( event='page-types.news_listing.getFeaturedNews', args={ newsIds=args.featured_news } )#
-<!--- 
+<!---
 	<cfloop list="#args.featured_news#" item="itemNews">
-		<h3><a href="#event.buildLink(page=itemNews)#">#renderLabel( 'news_detail', itemNews )#</a></h2>		
+		<h3><a href="#event.buildLink(page=itemNews)#">#renderLabel( 'news_detail', itemNews )#</a></h2>
 	</cfloop> --->
 
-	<cfif newsRegions.recordCount>		
+	<cfif newsRegions.recordCount>
 		<form name="filter" action="#event.buildLink()#">
 			<select name="region">
 				<option value="">All</option>
-				<cfloop query="newsRegions">															
+				<cfloop query="newsRegions">
 					<option value="#newsRegions.id#" <cfif selectedRegion == newsRegions.id>selected</cfif>>#newsRegions.label#</option>
 				</cfloop>
 			</select>
@@ -40,8 +40,9 @@
 
 	<cfloop query="newsList">
 		<li>
+			<img src="#event.buildLink( assetId=newsList.main_image, derivative="listingImage" )#" />
 			<a href="#event.buildLink(page=newsList.id)#">#newsList.title# </a>
-			<cfif isDate( newsList.date_published ?: "" )>				
+			<cfif isDate( newsList.date_published ?: "" )>
 				<p>Published #dateFormat( newsList.date_published, "dd mmmm, yyyy" )#</p>
 			</cfif>
 		</li>

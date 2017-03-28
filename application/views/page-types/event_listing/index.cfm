@@ -4,10 +4,11 @@
 	eventList        = args.eventList    ?: queryNew('');
 	selectedRegion   = rc.region         ?: "";
 	selectedCategory = rc.category       ?: "";
+
 </cfscript>
 
 <cfoutput>
-	#renderViewlet( event='page-types.event_listing.listFeaturedEvents' )#
+	#renderViewlet( event='page-types.event_listing.listFeaturedEvents' , args={eventListingPage = event.getCurrentPageID() } )#
 
 	<cfloop query="#args.eventList#">
 		<h4><a href="#event.buildLink( page=args.eventList.id )#">#args.eventList.title#</a></h4>

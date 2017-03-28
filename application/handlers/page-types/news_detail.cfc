@@ -3,8 +3,13 @@ component {
 	property name="newsService" inject="NewsService";
 
 	private function index( event, rc, prc, args={} ) {
-		
+
 		var pageId = event.getCurrentPageId();
+		var upload = rc.upload ?: "";
+
+		if( len( upload) ){
+			writeDump("received file"); abort;
+		}
 
 		return renderView(
 			  view           = 'page-types/news_detail/index'
@@ -20,12 +25,12 @@ component {
 
 		if( isEmpty( newsId ) ){
 			return "";
-		} 
+		}
 
 		return renderView(
 			  view = "page-types/news_detail/_regions"
-			, args = { 
-				  regions    = newsService.getNewsRegionById( newsId ) 
+			, args = {
+				  regions    = newsService.getNewsRegionById( newsId )
 				, parentPage = parentPage
 			}
 		);
@@ -35,7 +40,7 @@ component {
 		var regions = args.regions ?: "";
 	}
 
-	private string function getRelatedNews ( event, rc, prc, args={} ) { 
+	private string function getRelatedNews ( event, rc, prc, args={} ) {
 		var regionIds = args.regionIds ?: "";
 
 		if ( isEmpty(regionIds) ) {
@@ -44,8 +49,8 @@ component {
 
 		return renderView(
 			  view = "page-types/news_detail/_relatedNews"
-			, args = { 
-				relatedNews = newsService.getRelatedNewsByRegions (regionIds) 
+			, args = {
+				relatedNews = newsService.getRelatedNewsByRegions (regionIds)
 			}
 		);
 	}

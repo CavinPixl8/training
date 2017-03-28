@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--#!autodoc
+Website user: add form
+
+This form is used for the "add website user" form in the website user manager
+-->
+<form>
+	<tab id="basic" sortorder="10" title="preside-objects.website_user:basic.tab.title">
+		<fieldset id="basic" sortorder="10">
+			<field binding="website_user.firstname"      sortorder="31" control="textinput"  />
+			<field binding="website_user.lastname" sortorder="32" control="textinput"  />
+			<field binding="website_user.dob"  sortorder="70" control="datepicker"  />
+			<field binding="website_user.gender"        sortorder="80"  />
+			<field binding="website_user.address"        sortorder="90" control="textarea" />
+			<field binding="website_user.category"        sortorder="100" control="ManyToManySelect"  />
+
+		</fieldset>
+	</tab>
+</form>

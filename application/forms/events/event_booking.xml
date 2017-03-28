@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form i18nBaseUri="forms.events.event_booking:">
+	<tab>
+		<fieldset id="event_booking">
+			<field name="firstname"        control="textInput"  required="true" minLength="6" />
+			<field name="lastname"         control="textInput"  required="true" minLength="6" />
+			<field name="email"            control="emailInput" required="true" minLength="6" />
+			<field name="number_of_seats"  control="select"     required="true" labels="Select seats,1,2,3,4,5,6,7,8,9,10" values=" ,1,2,3,4,5,6,7,8,9,10" removeObjectPickerClass="true" />
+			<field name="session"          control="objectCheckbox" object="session" required="true" />
+			<field name="special_request"  control="textArea" />
+		</fieldset>
+	</tab>
+</form>

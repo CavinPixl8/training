@@ -3,7 +3,7 @@
 */
 component {
     /**
-    * @sitetreeService.inject SitetreeService 
+    * @sitetreeService.inject SitetreeService
     */
 
     function init(
@@ -13,29 +13,30 @@ component {
         return this;
     }
 
-    public query function getAllNewsDetail( 
-        required string  listingId 
+    public query function getAllNewsDetail(
+        required string  listingId
                  string  region  = ""
                  numeric maxRows = 5
-    ) { 
+    ) {
 
         var filter = "page.parent_page = :page.parent_page";
         if( !isEmpty( arguments.region ) ){
             filter &= " AND region.id IN (:region.id) "
         }
 
-        return $getPresideObject( "news_detail" ).selectData( 
+        return $getPresideObject( "news_detail" ).selectData(
               filter       = filter
-            , filterParams = { "page.parent_page"=arguments.listingId, "region.id"=listToArray( arguments.region ) }  
+            , filterParams = { "page.parent_page"=arguments.listingId, "region.id"=listToArray( arguments.region ) }
             , extraFilters = [ _getSiteTreeService().getActivePageFilter() ]
-            , selectFields = [ 
+            , selectFields = [
                   "page.id"
                 , "page.title"
                 , "page.main_content"
+                , "page.main_image"
                 , "news_detail.date_published"
                 , "news_detail.news_author"
                 , "category.label as category_label"
-            ] 
+            ]
             , orderBy      = "news_detail.date_published desc"
             , maxRows      = arguments.maxRows
         );
@@ -43,8 +44,8 @@ component {
 
     public query function getNewsRegionById( required string newsId ) {
         return $getPresideObjectService().selectData(
-              filter       = { news_detail=arguments.newsId }            
-            , objectName   = "news_detail__join__region"  
+              filter       = { news_detail=arguments.newsId }
+            , objectName   = "news_detail__join__region"
             , selectFields = [
                   "region.id"
                 , "region.label"
@@ -56,7 +57,7 @@ component {
     public query function getFeaturedNewsById( required string newsIds ){
         return $getPresideObjectService().selectData(
               filter       = { "news_detail.id"=listToArray( arguments.newsIds ) }
-            , objectName   = "news_detail"  
+            , objectName   = "news_detail"
             , selectFields = [
                   "page.id"
                 , "page.title"
@@ -68,8 +69,8 @@ component {
 
     public query function getAllNewsRegions() {
         return $getPresideObjectService().selectData(
-              objectName   = "news_detail"  
-            , groupBy      = "region.id"  
+              objectName   = "news_detail"
+            , groupBy      = "region.id"
             , selectFields = [
                   "region.id"
                 , "region.label"
@@ -81,8 +82,8 @@ component {
     public query function getRelatedNewsByRegions( required string regionIds ) {
         return $getPresideObjectService().selectData(
               filter       = { "region.id"=listToArray( arguments.regionIds ) }
-            , groupBy      = "page.id"   
-            , objectName   = "news_detail" 
+            , groupBy      = "page.id"
+            , objectName   = "news_detail"
             , selectFields = [
                   "page.id"
                 , "page.title"
@@ -99,5 +100,5 @@ component {
 
     private void function _setSiteTreeService( required any sitetreeService ) {
         _sitetreeService = arguments.sitetreeService
-    } 
+    }
 }

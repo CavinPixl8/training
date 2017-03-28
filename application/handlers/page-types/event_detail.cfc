@@ -1,5 +1,5 @@
 component {
-	
+
 	property name="eventService" inject="EventService";
 
 	private function index( event, rc, prc, args={} ) {
@@ -8,10 +8,10 @@ component {
 			  view          = 'page-types/event_detail/index'
 			, args          = args
 			, presideObject = 'event_detail'
-			, id            = event.getCurrentPageId()		
+			, id            = event.getCurrentPageId()
 		);
 	}
-	private string function getRelatedEvents ( event, rc, prc, args={} ) { 
+	private string function getRelatedEvents ( event, rc, prc, args={} ) {
 		var eventId = args.eventId ?: "";
 
 		if ( isEmpty(eventId) ) {
@@ -20,17 +20,16 @@ component {
 
 		regionList    = eventService.getEventRegionById( eventId );
 		regionIds = valueList( regionList.id );
-		writeDump (regionIds);
 
 		return renderView(
 			  view = "page-types/event_detail/_relatedEvents"
-			, args = { 
-				relatedEvents = eventService.getRelatedEventsByRegions ( eventId ) 
+			, args = {
+				relatedEvents = eventService.getRelatedEventsByRegions ( regionIds, eventId )
 			}
 		);
 	}
 
-	private string function getEventDetailRegions(){
+	private string function getEventDetailRegions() {
 		var recordId = args.recordId ?: "";
 
 		if( isEmpty( recordId ) ){
@@ -41,6 +40,20 @@ component {
 
 		return renderView(
 			  view = "page-types/event_detail/_eventRegions"
+			, args = args
+		);
+	}
+	private string function getPrograms(event, rc, prc, args={} ) {
+		var eventId = args.eventId ?: "";
+
+		if ( isEmpty( eventId ) ){
+			return "";
+		}
+
+		args.programs = eventService.getProgramsByEvent( eventId=eventId );
+
+		return renderView(
+			  view = "page-types/event_detail/_eventPrograms"
 			, args = args
 		);
 	}

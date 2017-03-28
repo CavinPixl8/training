@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form i18nBaseUri="forms.member_registration.account_info:">
+	<tab>
+		<fieldset id="account_info">
+
+			<field name="userId"          control="textInput" required="true" />
+			<field name="password"        control="password" required="true" minLength="6"/>
+			<field name="confirmPassword" control="password" required="true" minLength="6" />
+
+		</fieldset>
+	</tab>
+
+</form>

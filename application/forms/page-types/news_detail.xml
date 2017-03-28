@@ -5,7 +5,8 @@
 			<field binding="news_detail.date_published" />
 			<field binding="news_detail.news_author" />
 			<field binding="news_detail.category" />
-			<field binding="news_detail.regions" quickadd="true" quickedit="true" sortable="true" />
+			<field binding="news_detail.regions"  quickadd="true" quickedit="true" sortable="true" />
+			<field binding="news_detail.document" control="assetpicker" allowtypes="pdf" maxFileSize="512" multiple="true" />
 		</fieldset>
 	</tab>
 </form>

@@ -18,6 +18,7 @@ component extends="preside.system.config.Config" {
 		settings.features.websiteUsers.enabled = true;
 
 		_setupDerivatives( settings.assetManager.derivatives );
+		_setupEmailSettings();
 	}
 
 	private void function _setupDerivatives( required struct derivatives ){
@@ -35,6 +36,7 @@ component extends="preside.system.config.Config" {
 				{ method="shrinkToFit", args={ width=300, height=120  } }
 			]
 		};
+
 		derivatives.newsPDFPreview = {
 			  permissions     = "inherit"
 			, transformations = [
@@ -43,7 +45,28 @@ component extends="preside.system.config.Config" {
 			]
 		};
 
-
 	}
 
+	private void function _setupEmailSettings(){
+		settings.email.templates.memberRegistration = {
+			  feature       = "cms"
+			, recipientType = "anonymous"
+			, parameters    = [
+				  { id="first_name", required=true }
+				, { id="last_name" , required=true }
+				, { id="user_id"   , required=true }
+			]
+		}
+		settings.email.templates.eventBooking = {
+			  feature       = "cms"
+			, recipientType = "anonymous"
+			, parameters    = [
+				  { id="first_name"        , required=true }
+				, { id="last_name"         , required=true }
+				, { id="number_of_seats"   , required=true }
+				, { id="booking_session"   , required=true }
+				, { id="special_request"   , required=true }
+			]
+		}
+	}
 }

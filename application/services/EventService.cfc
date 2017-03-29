@@ -151,28 +151,60 @@ component {
 		);
 		return bookableQuery.bookable
 	}
-	public string function saveBooking(
+	public struct function saveBooking(
 		  required string firstname
 		, required string lastname
 		, required string email
 		, required string numberOfSeats
 		, required string session
 		, required string specialRequest
+		, required string eventId
 	) {
+		var results = {};
+		results.newId  = "";
 
-		return $getPresideObjectService().insertData(
-			  data = {
-				  firstname      = arguments.firstname
-				, lastname       = arguments.lastname
-				, email          = arguments.email
-				, numberOfSeats  = arguments.numberOfSeats
-				, session        = arguments.session
-				, specialRequest = arguments.specialRequest
-				, label          = arguments.firstname & " " & arguments.lastname & " booking on " & dateTimeFormat( now(), "dd mmm yyyy 'at' HH:nn:ss z" )
-			  }
-			, insertManyToManyRecords = true
-			, objectName              = "event_booking_detail"
-		);
+			try{
+				transaction {
+
+					results.newId = $getPresideObjectService().insertData(
+						  data = {
+							  firstname      = arguments.firstname
+							, lastname       = arguments.lastname
+							, email          = arguments.email
+							, numberOfSeats  = arguments.numberOfSeats
+							, session        = arguments.session
+							, specialRequest = arguments.specialRequest
+							, label          = arguments.firstname & " " & arguments.lastname & " booking on " & dateTimeFormat( now(), "dd mmm yyyy 'at' HH:nn:ss z" )
+							, event_detail   = arguments.eventId
+						  }
+						, insertManyToManyRecords = true
+						, objectName              = "event_booking_detail"
+					);
+
+					$sendEmail(
+						  template = "eventBooking"
+						, to       = [ arguments.email ]
+						, args     = {
+							  firstName      = arguments.firstname
+							, lastName       = arguments.lastname
+							, numberOfSeats  = arguments.numberOfSeats
+							, bookingSession = arguments.session
+							, specialRequest = arguments.specialRequest
+							, eventId        = arguments.eventId
+						}
+					);
+				}
+
+				results.statusCode   = "";
+				results.errorMessage = "";
+
+			}catch( e ){
+				$raiseError(e);
+				results.statusCode   = "ERROR_SAVING";
+				results.errorMessage = "Saving error, no email is sent";
+			}
+
+		return results
     }
     public query function getBookingList(){
 
@@ -180,6 +212,7 @@ component {
     		  objectName   = "event_booking_detail"
     		, selectFields = [
     			  "event_booking_detail.label as booking_label"
+    			, "event_detail$page.title as event_name"
     			, "firstname"
     			, "lastname"
     			, "email"

@@ -46,21 +46,26 @@ component {
 		if( !validationResult.validated() ){
 			setNextEvent(
 				  url           = event.buildLink( page="event_booking" )
-				, persistStruct = { validationResult=validationResult, error=true, formData=bookingData }
+				, persistStruct = { validationResult=validationResult, statusCode="ERROR_INPUT", errorMessage="Incorrect input", formData=bookingData }
 			 )
 		}
 		else{
-			eventService.saveBooking(
+			var results = eventService.saveBooking(
 				  firstname      = bookingData.firstname
 				, lastname       = bookingData.lastname
 				, email          = bookingData.email
 				, numberOfSeats  = bookingData.number_of_seats
 				, session        = bookingData.session
 				, specialRequest = bookingData.special_request
+				, eventId        = rc.eventId ?: ""
 			);
 			setNextEvent(
-				  url = event.buildLink(page="event_booking")
-				, persistStruct = { success=true }
+				  url           = event.buildLink(page="event_booking")
+				, persistStruct = {
+					  statusCode   = results.statusCode
+					, errorMessage = results.errorMessage
+					, newID        = results.newID
+				}
 			)
 		}
 	}

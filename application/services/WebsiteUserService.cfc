@@ -16,34 +16,52 @@ component {
 		return _getWebsiteUser().selectData( id = arguments.id );
 	 }
 
-	 public string function saveUser( required struct websiteUserData ) {
+	 public string function saveUser(
+	 	   required string login_id
+		 , required string email_address
+		 , required string display_name
+		 ,          string firstname = ""
+		 ,          string lastname  = ""
+		 ,          string dob       = ""
+		 ,          string gender    = ""
+		 ,          string address   = ""
+		 ,          string country   = ""
+		 , required string category
+	 ) {
 	 	var newId = "";
 
-	 	try{
+		newId = _getWebsiteUser().insertData(
+			  data                    = {
+				  login_id      = arguments.login_id
+				, email_address = arguments.email_address
+				, display_name  = arguments.display_name
+				, firstname     = arguments.firstname
+				, lastname      = arguments.lastname
+				, dob           = arguments.dob
+				, gender        = arguments.gender
+				, address       = arguments.address
+				, country       = arguments.country
+				, category      = arguments.category
+			  }
+			, insertManyToManyRecords = true
+		);
 
-			newId = _getWebsiteUser().insertData( data=arguments.websiteUserData , insertManyToManyRecords=true );
-
-			$sendEmail(
-				  template = "memberRegistration"
-				, to       = [ arguments.websiteUserData.email_address ]
-				, args     = {
-					  firstName = arguments.websiteUserData.firstname
-					, lastName  = arguments.websiteUserData.lastname
-					, userId    = arguments.websiteUserData.login_id
-				}
-			);
-
- 		}catch( e ){
- 			writeDump(e);
- 			abort;
- 		}
+		$sendEmail(
+			  template = "memberRegistration"
+			, to       = [ arguments.email_address ]
+			, args     = {
+				  firstName = arguments.firstname
+				, lastName  = arguments.lastname
+				, userId    = arguments.login_id
+			}
+		);
 
 		return newID;
 	 }
 
 	 public boolean function checkRecord( required string fieldName, required string value ){
 		var filter = {};
-		filter[arguments.fieldname] = arguments.value;
+		filter[ arguments.fieldname ] = arguments.value;
 
 		return _getWebsiteUser().dataExists( filter = filter );
 	 }

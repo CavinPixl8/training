@@ -9,6 +9,7 @@
 			<field name="dob"       control="datePicker" required="true" />
 			<field name="gender"    control="radio"      required="true" labels="Female,Male" values="F,M" />
 			<field name="address"   control="textArea"   required="true" />
+			<field name="country"   control="select"     labels="US,UK,Malaysia" values="us,uk,malaysia" removeObjectPickerClass="true" />
 			<field name="interested_in"  control="objectCheckbox" object="category" required="false" />
 
 		</fieldset>

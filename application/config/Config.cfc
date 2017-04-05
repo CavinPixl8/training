@@ -19,6 +19,14 @@ component extends="preside.system.config.Config" {
 
 		_setupDerivatives( settings.assetManager.derivatives );
 		_setupEmailSettings();
+
+		_setupInterceptors();
+
+		settings.notificationTopics.append( "memberRegistration" );
+		settings.notificationTopics.append( "newEventBooked" );
+		settings.notificationTopics.append( "websiteUserDataChanged" );
+
+		coldbox.requestContextDecorator = "app.decorators.RequestContextDecorator";
 	}
 
 	private void function _setupDerivatives( required struct derivatives ){
@@ -68,5 +76,11 @@ component extends="preside.system.config.Config" {
 				, { id="special_request"   , required=true }
 			]
 		}
+	}
+
+	private void function _setupInterceptors(){
+
+		interceptors.append( { class="app.interceptors.DataChangeInterceptor",       properties={} } );
+
 	}
 }

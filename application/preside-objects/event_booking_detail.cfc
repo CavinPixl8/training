@@ -11,4 +11,5 @@ component  {
 	property name="session"        relationship="many-to-many" relatedTo="session";
 	property name="specialRequest" type="string"  dbtype="varchar";
 	property name="event_detail"      relationship="many-to-one"  relatedTo="event_detail";
+	property name="total_price"    type="numeric" dbtype="double";
  }

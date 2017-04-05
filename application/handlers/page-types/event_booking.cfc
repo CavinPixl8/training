@@ -1,11 +1,13 @@
 component {
 
 	property name="eventService" inject="EventService";
+	property name="notificationService" inject="notificationService";
 
 	private function index( event, rc, prc, args={} ) {
-		args.eventId = rc.id ?: "";
+		args.eventId    = rc.id ?: "";
 
 		if ( len( args.eventId ) ){
+			args.eventPrice = eventService.getEventPrice ( eventId=args.eventId );
 			bookable = eventService.checkBookable( eventId=args.eventId );
 
 			if( !bookable ) {
@@ -21,46 +23,59 @@ component {
 	}
 
 	public function addBooking( event, rc, prc, args={} ) {
-		var bookingData      = event.getCollectionForForm( "events.event_booking" );
-		var validationResult = validateForm( "events.event_booking", bookingData );
+		var bookingForm      = event.getCollectionForForm( "events.event_booking" );
+		var validationResult = validateForm( "events.event_booking", bookingForm );
 
-		if( len( trim( bookingData.firstname ) )< 6 ){
+		if( len( trim( bookingForm.firstname ) )< 6 ){
 			validationResult.addError( fieldName="firstname" , message="Must contain at least 6 characters! ");
 		}
-		if( len( trim( bookingData.lastname ) )< 6 ){
+		if( len( trim( bookingForm.lastname ) )< 6 ){
 			validationResult.addError( fieldName="lastname" , message="Must contain at least 6 characters! ");
 		}
 
-		if( !isValid( "email",bookingData.email ) ){
+		if( !isValid( "email",bookingForm.email ) ){
 			validationResult.addError( fieldName="email" , message="Please enter a valid email address. ");
 		}
 
-		if( !len( trim( bookingData.number_of_seats ) ) ){
+		if( !len( trim( bookingForm.number_of_seats ) ) OR bookingForm.number_of_seats LT 1 ){
 			validationResult.addError( fieldName="number_of_seats" , message="Please choose your number of seats. ");
 		}
 
-		if( !len( trim( bookingData.session ) ) ){
+		if( !len( trim( bookingForm.session ) ) ){
 			validationResult.addError( fieldName="session" , message="Please select at least one session. ");
 		}
 
 		if( !validationResult.validated() ){
 			setNextEvent(
 				  url           = event.buildLink( page="event_booking" )
-				, persistStruct = { validationResult=validationResult, statusCode="ERROR_INPUT", errorMessage="Incorrect input", formData=bookingData }
+				, persistStruct = { validationResult=validationResult, statusCode="ERROR_INPUT", errorMessage="Incorrect input", formData=bookingForm }
 			 )
 		}
 		else{
+			var price = numberFormat( bookingForm.number_of_seats * eventService.getEventPrice ( rc.eventId ?: "" ), "00.00" );
+
+			var bookingData = {
+				  firstname      = filterHTML( bookingForm.firstname )
+				, lastname       = filterHTML( bookingForm.lastname )
+				, email          = filterHTML( bookingForm.email )
+				, numberOfSeats  = bookingForm.number_of_seats
+				, session        = bookingForm.session
+				, specialRequest = filterHTML( bookingForm.special_request ?: "" )
+				, event_id       = rc.eventId ?: ""
+				, total_price    = price
+			}
 			var results = eventService.saveBooking(
-				  firstname      = bookingData.firstname
-				, lastname       = bookingData.lastname
-				, email          = bookingData.email
-				, numberOfSeats  = bookingData.number_of_seats
-				, session        = bookingData.session
-				, specialRequest = bookingData.special_request
-				, eventId        = rc.eventId ?: ""
+				  argumentCollection = bookingData
 			);
+			if ( !len (results.errorMessage) ){
+				notificationService.createNotification(
+					  topic = "newEventBooked"
+					, type  = "ALERT"
+					, data  = bookingData
+				);
+			}
 			setNextEvent(
-				  url           = event.buildLink(page="event_booking")
+				  url           = event.buildLink( page="event_booking" )
 				, persistStruct = {
 					  statusCode   = results.statusCode
 					, errorMessage = results.errorMessage

@@ -1,11 +1,12 @@
 component {
 	private struct function prepareParameters(
-		  required string firstName
-		, required string lastName
+		  required string  firstName
+		, required string  lastName
 		, required numeric numberOfSeats
-		, required string bookingSession
-		, required string specialRequest
-		, required string eventId
+		, required string  bookingSession
+		, required string  specialRequest
+		, required string  eventId
+		, required numeric totalPrice
 	) {
 		var bookedSession="";
 		var allSessions="";
@@ -19,6 +20,7 @@ component {
 			, booking_session = allSessions
 			, special_request = arguments.specialRequest
 			, event_name      = renderLabel ( "event_detail", arguments.eventId )
+			, total_price     = arguments.totalPrice
 		}
 	}
 
@@ -30,6 +32,7 @@ component {
 			, booking_session = "Midnight"
 			, special_request = "for children"
 			, event_name      = "Sample Event Name"
+			, total_price     = -1
 		}
 	}
 

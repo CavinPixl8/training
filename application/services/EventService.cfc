@@ -143,36 +143,103 @@ component {
 		)
 	}
 	public boolean function checkBookable( required string eventId ){
-		var bookableQuery = $getPresideObjectService().selectData(
+		var eventBookableQuery = $getPresideObjectService().selectData(
 			  selectFields = [ "bookable" ]
 			, objectName   = "event_detail"
 			, filter       = "event_detail.id = :event_detail.id"
 			, filterParams = { "event_detail.id"=arguments.eventId }
 		);
-		return bookableQuery.bookable
+		return eventBookableQuery.bookable
 	}
-	public string function saveBooking(
-		  required string firstname
-		, required string lastname
-		, required string email
-		, required string numberOfSeats
-		, required string session
-		, required string specialRequest
+	public numeric function getEventPrice( required string eventId ){
+		var eventPriceQuery = $getPresideObjectService().selectData(
+			  selectFields = [ "price" ]
+			, objectName   = "event_detail"
+			, filter       = { "event_detail.id" = arguments.eventId }
+		)
+		return eventPriceQuery.price
+	}
+	public struct function saveBooking(
+		  required string  firstname
+		, required string  lastname
+		, required string  email
+		, required numeric numberOfSeats
+		, required string  session
+		,          string  specialRequest
+		, required string  event_id
+		, required numeric total_price
 	) {
+		var results = {};
+		results.newId  = "";
+			try{
+				transaction {
+					var seatsQuery = $getPresideObjectService().selectData(
+						  objectName   = "event_detail"
+						, selectFields = [ "seats_allocated", "seats_booked" ]
+						, filter       = { "id"=arguments.event_id }
+					);
 
-		return $getPresideObjectService().insertData(
-			  data = {
-				  firstname      = arguments.firstname
-				, lastname       = arguments.lastname
-				, email          = arguments.email
-				, numberOfSeats  = arguments.numberOfSeats
-				, session        = arguments.session
-				, specialRequest = arguments.specialRequest
-				, label          = arguments.firstname & " " & arguments.lastname & " booking on " & dateTimeFormat( now(), "dd mmm yyyy 'at' HH:nn:ss z" )
-			  }
-			, insertManyToManyRecords = true
-			, objectName              = "event_booking_detail"
-		);
+					if ( len ( seatsQuery.seats_allocated ) && len ( seatsQuery.seats_booked ) && ( arguments.numberOfSeats + seatsQuery.seats_booked GT seatsQuery.seats_allocated ) ){
+						throw ( message="booking exceed seat allocated" );
+					}
+					else{
+						if ( !len( seatsQuery.seats_booked ) )
+						{
+							seatsQuery.seats_booked = 0;
+						}
+						var addSeatsBooked = seatsQuery.seats_booked + arguments.numberOfSeats ;
+
+						$getPresideObjectService().updateData(
+							  objectName = "event_detail"
+							, filter     = { "id"=arguments.event_id }
+							, data       = { "seats_booked"=addSeatsBooked }
+						)
+					}
+
+					results.newId = $getPresideObjectService().insertData(
+						  data = {
+							  firstname      = arguments.firstname
+							, lastname       = arguments.lastname
+							, email          = arguments.email
+							, numberOfSeats  = arguments.numberOfSeats
+							, session        = arguments.session
+							, specialRequest = arguments.specialRequest
+							, label          = arguments.firstname & " " & arguments.lastname & " booking on " & dateTimeFormat( now(), "dd mmm yyyy 'at' HH:nn:ss z" )
+							, event_detail   = arguments.event_id
+							, total_price    = arguments.total_price
+						  }
+						, insertManyToManyRecords = true
+						, objectName              = "event_booking_detail"
+					);
+
+
+
+					$sendEmail(
+						  template = "eventBooking"
+						, to       = [ arguments.email ]
+						, args     = {
+							  firstName      = arguments.firstname
+							, lastName       = arguments.lastname
+							, numberOfSeats  = arguments.numberOfSeats
+							, bookingSession = arguments.session
+							, specialRequest = arguments.specialRequest
+							, eventId        = arguments.event_id
+							, totalPrice     = arguments.total_price
+						}
+					);
+				}
+
+				results.statusCode   = "";
+				results.errorMessage = "";
+
+			}catch( e ){
+				writeDump(e);abort;
+				$raiseError(e);
+				results.statusCode   = "ERROR_SAVING";
+				results.errorMessage = "Saving error, no email is sent";
+			}
+
+		return results
     }
     public query function getBookingList(){
 
@@ -180,6 +247,7 @@ component {
     		  objectName   = "event_booking_detail"
     		, selectFields = [
     			  "event_booking_detail.label as booking_label"
+    			, "event_detail$page.title as event_name"
     			, "firstname"
     			, "lastname"
     			, "email"

@@ -6,13 +6,13 @@ component {
 
 		var qObj = presideObjectService.selectData( objectName=args.object, orderBy="label" )
 
-		args.values=valueArray(qObj.id)
-		args.labels=valueArray(qObj.label)
+		args.values=valueArray( qObj.id );
+		args.labels=valueArray( qObj.label );
 
 
 		return renderView(
-			  view          = 'formcontrols/checkboxList/index'
-			, args          = args
+			  view = 'formcontrols/checkboxList/index'
+			, args = args
 		);
 	}
 }

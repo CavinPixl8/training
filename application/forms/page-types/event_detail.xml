@@ -10,6 +10,7 @@
 			<field binding="event_detail.program" />
 			<field binding="event_detail.bookable" />
 			<field binding="event_detail.price" />
+			<field binding="event_detail.seats_allocated" />
 			<field binding="event_detail.session"   quickadd="true" quickedit="true" sortable="true" />
 		</fieldset>
 	</tab>

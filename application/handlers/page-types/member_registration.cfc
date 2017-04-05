@@ -3,10 +3,10 @@ component {
 	property name="formsService"        inject="formsService";
 	property name="websiteUserService"  inject="WebsiteUserService";
 	property name="websiteLoginService" inject="WebsiteLoginService";
-
+    property name="notificationService" inject="notificationService";
 
 	private function index( event, rc, prc, args={} ) {
-		// TODO: create your handler logic here
+
 		return renderView(
 			  view          = 'page-types/member_registration/index'
 			, presideObject = 'member_registration'
@@ -14,7 +14,6 @@ component {
 			, args          = args
 		);
 	}
-
 
 	public function signup( event, rc, prc, args={} ) {
 		var personalForname = formsService.getMergedFormName("member_registration.personal_detail","member_registration.account_info");
@@ -48,16 +47,25 @@ component {
 				, dob           = personalFormData.dob
 				, gender        = personalFormData.gender
 				, address       = personalFormData.address
+				, country       = personalFormData.country
 				, category		= personalFormData.interested_in ?: ""
 			}
+			var loginId = websiteUserService.saveUser( argumentCollection = websiteUserData );
 
-			var memeberId = websiteUserService.saveUser( websiteUserData );
+			websiteLoginService.changePassword( password=personalFormData.password, userId=loginId );
 
-			websiteLoginService.changePassword( password =personalFormData.password, userId=memeberId )
+			notificationService.createNotification(
+				  topic = "memberRegistration"
+				, type  = "INFO"
+				, data  = websiteUserData
+			);
 
 			setNextEvent(
 				  url = event.buildLink(page="member_registration")
-				, persistStruct = { success=true }
+				, persistStruct = {
+					  success              = true
+					, showPromotionMessage = event.isUKRegistrant( websiteUserData.country )
+				}
 			 )
 		}
 	}

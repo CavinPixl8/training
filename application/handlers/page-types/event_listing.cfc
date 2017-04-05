@@ -11,7 +11,6 @@ component {
 			, region    = region
 			, category  = category
 		);
-		writeDump(args.eventList);abort;
 		args.eventRegions = eventService.getAllEventRegions();
 		args.categories   = eventService.getAllEventCategories();
 

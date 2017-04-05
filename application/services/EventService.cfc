@@ -2,7 +2,13 @@
 * @presideService
 */
 component {
-	public any function init() {
+	/**
+	* @siteTreeService.inject siteTreeService
+	*/
+	public any function init(
+		required any siteTreeService
+	) {
+		_setSiteTreeService( arguments.siteTreeService )
 		return this;
 	}
 
@@ -169,32 +175,32 @@ component {
 		, required string  event_id
 		, required numeric total_price
 	) {
-		var results = {};
-		results.newId  = "";
-			try{
-				transaction {
-					var seatsQuery = $getPresideObjectService().selectData(
-						  objectName   = "event_detail"
-						, selectFields = [ "seats_allocated", "seats_booked" ]
-						, filter       = { "id"=arguments.event_id }
+		var results  = {
+			  newId        = ""
+			, statusCode   = ""
+			, errorMessage = ""
+		};
+
+		try{
+			transaction {
+				var seatsQuery = $getPresideObjectService().selectData(
+					  objectName   = "event_detail"
+					, selectFields = [ "seats_allocated", "seats_booked" ]
+					, filter       = { id=arguments.event_id }
+				);
+
+				if ( len ( seatsQuery.seats_allocated ) && len ( seatsQuery.seats_booked ) && ( arguments.numberOfSeats + seatsQuery.seats_booked GT seatsQuery.seats_allocated ) ){
+					results.statusCode   = "BOOKING_FULL";
+					results.errorMessage = "Booking exceed seat allocated";
+				} else {
+					if ( !len( seatsQuery.seats_booked ) ){
+						seatsQuery.seats_booked = 0;
+					}
+
+					_getSiteTreeService().editPage(
+						  id           = arguments.event_id
+						, seats_booked = val( seatsQuery.seats_booked + arguments.numberOfSeats )
 					);
-
-					if ( len ( seatsQuery.seats_allocated ) && len ( seatsQuery.seats_booked ) && ( arguments.numberOfSeats + seatsQuery.seats_booked GT seatsQuery.seats_allocated ) ){
-						throw ( message="booking exceed seat allocated" );
-					}
-					else{
-						if ( !len( seatsQuery.seats_booked ) )
-						{
-							seatsQuery.seats_booked = 0;
-						}
-						var addSeatsBooked = seatsQuery.seats_booked + arguments.numberOfSeats ;
-
-						$getPresideObjectService().updateData(
-							  objectName = "event_detail"
-							, filter     = { "id"=arguments.event_id }
-							, data       = { "seats_booked"=addSeatsBooked }
-						)
-					}
 
 					results.newId = $getPresideObjectService().insertData(
 						  data = {
@@ -212,8 +218,6 @@ component {
 						, objectName              = "event_booking_detail"
 					);
 
-
-
 					$sendEmail(
 						  template = "eventBooking"
 						, to       = [ arguments.email ]
@@ -227,17 +231,16 @@ component {
 							, totalPrice     = arguments.total_price
 						}
 					);
+
 				}
-
-				results.statusCode   = "";
-				results.errorMessage = "";
-
-			}catch( e ){
-				writeDump(e);abort;
-				$raiseError(e);
-				results.statusCode   = "ERROR_SAVING";
-				results.errorMessage = "Saving error, no email is sent";
 			}
+
+		}catch( e ){
+			$raiseError(e);
+			results.statusCode         = "ERROR_SAVING";
+			results.errorMessage       = "Saving error, no email is sent";
+			results.systemErrorMessage = e.detail;
+		}
 
 		return results
     }
@@ -258,4 +261,12 @@ component {
     		, orderBy      = "dateCreated"
     	)
     }
+
+// SETTERS and GETTERS
+	private any function _getSiteTreeService() {
+		return _siteTreeService;
+	}
+	private void function _setSiteTreeService( required any siteTreeService ) {
+		_siteTreeService = arguments.siteTreeService;
+	}
 }

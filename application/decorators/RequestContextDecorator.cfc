@@ -14,7 +14,7 @@ component extends="preside.system.coldboxModifications.RequestContextDecorator" 
 		);
 
 		if ( len( eventBookingsQuery.seats_allocated ) && len( eventBookingsQuery.seats_booked ) ){
-			if ( eventBookingsQuery.seats_booked GE eventBookingsQuery.seats_allocated ){
+			if ( eventBookingsQuery.seats_booked GTE eventBookingsQuery.seats_allocated ){
 				return true;
 			}
 		}

@@ -15,7 +15,7 @@ component extends="coldbox.system.Interceptor" {
 
 				var websiteUserQuery = presideObjectService.selectData(
 					  objectName   = objectName
-					, selectFields = [ "email_address", "login_id" ]
+					, selectFields = [ "email_address", "login_id", "display_name" ]
 					, filter       = { "id"=id }
 				);
 
@@ -26,7 +26,7 @@ component extends="coldbox.system.Interceptor" {
 					else if ( StructKeyExists( data, "email_address" ) && websiteUserQuery.email_address != data.email_address ){
 						data.changedField = "email_address";
 					}
-					else{
+					else if ( StructKeyExists( data, "display_name" ) && websiteUserQuery.display_name != data.display_name ){
 						data.changedField = "display_name";
 					}
 				}

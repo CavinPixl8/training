@@ -21,7 +21,7 @@
 		</cfcase>
 	</cfswitch>
 
-	<form action="#event.buildLink( linkTo='login.resetPasswordAction' )#" method="post">
+	<form action="#event.buildLink( linkTo='login.resetPasswordAction' )#" method="post" class="form form-horizontal">
 		<input type="hidden" name="token" value="#rc.token#" />
 		#renderForm( formName="login.reset_password", context="website" )#
 

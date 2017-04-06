@@ -21,7 +21,7 @@
 		</cfcase>
 	</cfswitch>
 
-	<form action="#event.buildLink( linkTo='login.sendResetInstructions' )#" method="post">
+	<form action="#event.buildLink( linkTo='login.sendResetInstructions' )#" method="post" class="form form-horizontal">
 
 		#renderForm( formName ="login.forgotten_password", context="website")#
 

@@ -20,7 +20,7 @@
 		</cfcase>
 	</cfswitch>
 
-	<form action="#event.buildLink( linkTo="login.attemptLogin" )#" method="post">
+	<form action="#event.buildLink( linkTo="login.attemptLogin" )#" method="post" class="form form-horizontal">
 
 		#renderForm( formName ="login.login_page", context="website" )#
 
